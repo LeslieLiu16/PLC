@@ -9,12 +9,9 @@ num_samples = 2000  # 采样点
 channels = 1  # 声道
 sampwidth = 2  # 采样宽度2bytes
 FILEPATH = 'speech.wav'
-
-""" 你的 APPID AK SK """
 APP_ID = '7082803'
 API_KEY = 'Yks9eZcnc3o53q77KkCXUoyS'
 SECRET_KEY = 'M02vHIUG2SZLLuyDPqrDmnJaTETauczq'
-
 client = AipSpeech(APP_ID, API_KEY, SECRET_KEY)
 
 def save_wave_file(filepath, data):
@@ -44,13 +41,15 @@ def my_record():
 def get_file_content(filePath):
     with open(filePath, 'rb') as fp:
         return fp.read()
+    
+def main():
+    res = client.asr(get_file_content('speech.wav'), 'wav', 16000,
+                     {'dev_pid': 1537,}).get('result')[0]
+    if '左转' in res:
+        controller.left_run()
+    else:
+        print("无法识别")
 
 if __name__ == '__main__':
     my_record()
-    res = client.asr(get_file_content('speech.wav'), 'wav', 16000, {'dev_pid': 1537,}).get('result')[0]
-    
-    if '左转' in res:
-        controller.left_run()
-
-    else:
-        print("无法识别")
+    main()
